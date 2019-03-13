@@ -7,32 +7,25 @@ library(chemometrics)
 
 shinyServer(function(input, output) {
   
+
   # load data
+  output$dataIsLoaded <- reactive({FALSE})
   dataLoaded <- reactive({
     inFile <- input$file
     if (is.null(inFile))
       return(NULL)
+    output$dataLoaded = reactive({TRUE})
     if (input$idCol)
       return(read.table(inFile$datapath, header = TRUE, sep = "", dec = ".")[-1])
     read.table(inFile$datapath, header = input$header, sep = "", dec = ".")
   })
+  output$varNames <- renderText({
+    namesVector <- names(dataLoaded())
+    paste(namesVector, collapse = ', ')
+  })
 
-  
-  # data for regression
-  y <- reactive({
-    if (is.null(dataLoaded()))
-      return(c(1,2,3,4,5))
-    dataLoaded()[input$yPos]
-  })
-  x <-  reactive({
-    if (is.null(dataLoaded()))
-      return(cbind(c(1,2,3,3,3),c(5,5,5,4,1)))
-    dataLoaded()[,-input$yPos]
-  })
 
   # fit model
-  ym <- reactive({as.matrix(y())})
-  xm <- reactive({as.matrix(x())})
   mod <- reactive({
     lm(as.formula(input$formula),data = dataLoaded())
   })

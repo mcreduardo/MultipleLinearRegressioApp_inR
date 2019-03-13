@@ -15,6 +15,14 @@ shinyUI(pageWithSidebar(
     # id column?
     checkboxInput("idCol", label = "id column", value = TRUE),
     
+    br(),
+    # data loaded
+    p("Loaded variables: "),
+    textOutput("varNames"),
+    br(),
+    br(),
+    
+
     # regression formula
     textInput("formula", label = ("Regression formula"), value = "y ~ x1+x2"),
     p("Ex.: y ~ x1+x2+x1*x3"),
